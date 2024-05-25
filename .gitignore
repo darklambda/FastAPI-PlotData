@@ -1,0 +1,5 @@
+
+app/Google/credentials-sa.json
+app/job-app.xlsx
+fastapi.tar
+app/*/__pycache__/
