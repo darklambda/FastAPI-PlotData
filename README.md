@@ -3,7 +3,7 @@
 ### Pre-requisites
 * Docker
 * Python 3.10.0
-* An xlsx file to transform into data for a plot, located in ``app/``
+* (Optional) An xlsx file to transform into data for a plot, located in ``app/``
 * A json file with the credentials for a Service Account of GCP, located in ``app/Google`` (This account must have access to the desired file).
 
 ### Running locally

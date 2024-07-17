@@ -1,0 +1,27 @@
+name: Build
+on:
+  push:
+    branches: master
+    paths:
+      - '.github/workflows/main.yml'
+jobs:
+
+  build:
+    name: Build 
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Create environment and credentials file
+      run: touch app/.env && touch app/Google/credentials-sa.json
+    - name: Write environment file
+      env:
+        ENV_FILE: ${{ secrets.ENV_FILE }}
+      run: printf "$ENV_FILE" >> app/.env
+    - name: Write credential file
+      env:
+        GOOGLE_API_JSON: ${{ secrets.GOOGLE_API_JSON }}
+      run: printf "$GOOGLE_API_JSON" >> app/Google/credentials-sa.json
+
+
+    

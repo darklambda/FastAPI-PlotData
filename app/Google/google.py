@@ -5,11 +5,14 @@ from googleapiclient.errors import HttpError
 from oauth2client.service_account import ServiceAccountCredentials
 from httplib2 import Http
 
+import os
+
+
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 KEY_FILE_LOCATION = './app/Google/credentials-sa.json'
-FILE_ID = '1mh4ro8fPRdH3Rxn4fXEBvLYnWDUk4RoD'
+FILE_ID = os.environ.get('FILE_ID')
 
-def download_file():
+def download_file(filename="job-app-tmp.xlsx"):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
       KEY_FILE_LOCATION, SCOPES)
     file = None
@@ -23,8 +26,8 @@ def download_file():
         downloader = MediaIoBaseDownload(file, request)
         done = False
         while done is False:
-            status, done = downloader.next_chunk()
-        with open("./app/job-app-tmp.xlsx", "wb") as f:
+            _, done = downloader.next_chunk()
+        with open("./app/" + filename, "wb") as f:
             f.write(file.getbuffer())
 
     except HttpError as error:

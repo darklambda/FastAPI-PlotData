@@ -1,5 +1,6 @@
 
 app/Google/credentials-sa.json
 app/job-app.xlsx
-fastapi.tar
+*.tar
 app/*/__pycache__/
+.env

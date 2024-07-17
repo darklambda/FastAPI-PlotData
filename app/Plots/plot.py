@@ -9,7 +9,7 @@ def generate_plot_data(file_name: str) -> dict:
 
     frame = pd.read_excel(file_name)
     frame['Sent Date'] = pd.to_datetime(frame['Sent Date'], format='%d-%m-%Y')
-    frame['Rejection Date'] = frame['Sent Date'] + frame['Time past [day]'].apply(timedelta)
+    frame['Rejection Date'] = frame['Sent Date'] + frame['Time past [day]'].apply(timedelta) # Careful when 'Time past' is 0
 
     app_frame = frame.sort_values(by='Sent Date')
 
