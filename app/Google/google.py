@@ -1,11 +1,16 @@
 import io
+import os
+
+from dotenv import load_dotenv
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 from googleapiclient.errors import HttpError
-from oauth2client.service_account import ServiceAccountCredentials
 from httplib2 import Http
+from oauth2client.service_account import ServiceAccountCredentials
+from os.path import join, dirname
 
-import os
+dotenv_path = join(dirname(__file__), '../.env')
+load_dotenv(dotenv_path)
 
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
@@ -25,7 +30,7 @@ def download_file(filename="job-app-tmp.xlsx"):
         file = io.BytesIO()
         downloader = MediaIoBaseDownload(file, request)
         done = False
-        while done is False:
+        while not done:
             _, done = downloader.next_chunk()
         with open("./app/" + filename, "wb") as f:
             f.write(file.getbuffer())

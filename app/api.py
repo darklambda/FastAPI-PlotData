@@ -1,15 +1,11 @@
 import uvicorn
 
-from dotenv import load_dotenv
-from fastapi import FastAPI, Response, Request
+from fastapi import FastAPI, Response, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from os.path import join, dirname, exists
+from os.path import exists
 
 from Google.google import download_file
 from Plots.plot import generate_plot_data, update_plot_data
-
-dotenv_path = join(dirname(__file__), '.env')
-load_dotenv(dotenv_path)
 
 app = FastAPI()
 
@@ -30,22 +26,38 @@ app.add_middleware(
         expose_headers=["*"]
 )
 
-def add_header(request: Request, response: Response):
+def add_header(request: Request, response: Response) -> bool:
     if 'Origin' in request.headers and request.headers['Origin'] in origins:
         response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
+        return True
+    else:
+        return False
+        
 
 @app.get("/plots")
 async def get_plots(request: Request, response: Response):
-    add_header(request, response)
-    return generate_plot_data('./app/job-app.xlsx')
+    correct = add_header(request, response)
+    if correct:
+        return generate_plot_data('./app/job-app.xlsx')
+    else:
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return response
 
 @app.get("/updatePlots")
 async def get_updatePlots(request: Request, response: Response):
-    add_header(request, response)
-    return update_plot_data()
+    correct = add_header(request, response)
+    if correct:
+        return update_plot_data()
+    else:
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return response
 
-if (not exists('./app/job-app.xlsx')):
-    download_file("job-app.xlsx")
+try:
+    if (not exists('./app/job-app.xlsx')):
+        download_file("job-app.xlsx")
 
-if __name__ == "__main__":
-    uvicorn.run(app, host='0.0.0.0', port=9000)
+    if __name__ == "__main__":
+        uvicorn.run(app, host='0.0.0.0', port=9000)
+except Exception as e:
+    print(e)
+    pass

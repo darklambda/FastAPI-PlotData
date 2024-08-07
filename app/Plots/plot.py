@@ -8,6 +8,7 @@ from Google.google import download_file
 def generate_plot_data(file_name: str) -> dict:
 
     frame = pd.read_excel(file_name)
+    frame = frame[frame['Time past [day]'] != "0"]
     frame['Sent Date'] = pd.to_datetime(frame['Sent Date'], format='%d-%m-%Y')
     frame['Rejection Date'] = frame['Sent Date'] + frame['Time past [day]'].apply(timedelta) # Careful when 'Time past' is 0
 
@@ -39,7 +40,14 @@ def generate_plot_data(file_name: str) -> dict:
     ns = os.path.getctime('./app/job-app.xlsx')
     c_ti = datetime.fromtimestamp(ns)
 
-    return {'applications': {'x_axis' : app_x, 'y_axis': app_y}, 'rejections': {'x_axis' : rej_x, 'y_axis': rej_y}, 'last_updated': str(c_ti)}
+    return {'applications': {'x_axis' : app_x, 'y_axis': app_y}, 
+            'rejections': {'x_axis' : rej_x, 'y_axis': rej_y},
+            'pie_chart': {'total': frame.shape[0], 
+                          'rejected': frame[frame['Resolution'] == 'Rejected'].shape[0], 
+                          'no_response': frame[frame['Resolution'] == 'No Response'].shape[0], 
+                          'ghosted': frame[frame['Resolution'] == 'Ghosted'].shape[0], 
+                          'waiting': frame[frame['Resolution'] == 'Waiting'].shape[0]},
+            'last_updated': str(c_ti)}
 
 def update_plot_data() -> dict:
     ns = os.path.getctime('./app/job-app.xlsx')
