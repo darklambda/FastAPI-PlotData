@@ -4,7 +4,8 @@
 * Docker
 * Python 3.10.0
 * (Optional) An xlsx file to transform into data for a plot, located in ``app/``
-* A json file with the credentials for a Service Account of GCP, located in ``app/Google`` (This account must have access to the desired file).
+* A ``.env`` file located in ``app/`` with a single ``FILE_ID`` variable containing the id of the cloud file
+* A json file with the credentials for a Service Account of GCP, located in ``app/Google`` (This account must have access to the desired file)
 
 ### Running locally
 * Run ``pip install --no-cache-dir --upgrade -r requirements.txt``
